@@ -1,0 +1,16 @@
+
+<div class ="pop-up-respingere" [hidden]="displayNotification">
+
+<fieldset>
+  <legend>Respingere cerere adeverinta</legend>
+  <div class="input-container">
+    <p>Introdu motivul de repingere a adeverintei</p>
+    <input type="text" [(ngModel)]="motivRespingere" required minlength="4" maxlength="100" size="50" class="larger-input" />
+  </div>
+  <div class="buttons">
+    <div class = "save"><button class = "btn"(click)="saveNotification(motivRespingere);rejectCertificate(certificateId,motivRespingere)">✔</button></div>
+    <div class = "close"><button class = "btn"(click)="closeNotification()">✘</button></div>
+
+  </div>
+</fieldset>
+</div>

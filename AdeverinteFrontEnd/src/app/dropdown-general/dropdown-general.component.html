@@ -1,0 +1,7 @@
+<div class="dropdown">
+  <button class="dropbtn">{{selectedOption  || titlu }}</button>
+  <div class="dropdown-content">
+    <button *ngFor="let option of options" class="dropdown-item" (click)="onSelect(option)">{{ option }}</button>
+  </div>
+</div>
+

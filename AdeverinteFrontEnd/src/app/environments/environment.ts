@@ -13,7 +13,7 @@ export const environment = {
   },
   useEmulators: true,
 
-  apiUrl : "http://localhost:5280",
+  apiUrl : "http://localhost:5246",
 
 
 };
