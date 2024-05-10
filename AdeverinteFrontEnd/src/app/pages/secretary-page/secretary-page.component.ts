@@ -25,6 +25,8 @@ import {CardRespingereComponent} from "../../card-respingere/card-respingere.com
 import {DropdownGeneralComponent} from "../../dropdown-general/dropdown-general.component";
 import {ICertificateResponseModel, IFacultyModel, ISpecialityModel} from "../../models/certificate.model";
 import {CertificateServices} from "../../services/certificate.services";
+import {FiltersComponent} from "../filters/filters.component";
+import {MatCardContent} from "@angular/material/card";
 
 
 @Component({
@@ -44,7 +46,7 @@ import {CertificateServices} from "../../services/certificate.services";
     MatRowDef,
     MatPaginator,
     CommonModule,
-    MatTableModule, MatPaginatorModule, CardRespingereComponent, ConfirmationPopUpComponent, NgIf, MatCheckbox, MatButton, DropdownGeneralComponent, FormsModule, MatIcon
+    MatTableModule, MatPaginatorModule, CardRespingereComponent, ConfirmationPopUpComponent, NgIf, MatCheckbox, MatButton, DropdownGeneralComponent, FormsModule, MatIcon, FiltersComponent, MatCardContent
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntl }],
   templateUrl: './secretary-page.component.html',

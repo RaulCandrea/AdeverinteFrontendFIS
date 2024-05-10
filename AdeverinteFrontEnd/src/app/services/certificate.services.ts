@@ -67,7 +67,7 @@ export class CertificateServices {
     return this.http.patch(url,{headers});
   }
 
-  public getSortedCertificates(pageNumber:number, pageSize:number,today:boolean,week:boolean,month:boolean,facultyId:string,specialityId:string,year:number,type:Type,state:EnumStare): Observable<ICertificateResponseModel[]> {
+  public getSortedCertificates(pageNumber?:number, pageSize?:number,today?:boolean,week?:boolean,month?:boolean,facultyId?:string,specialityId?:string,year?:number,type?:Type,state?:EnumStare): Observable<ICertificateResponseModel[]> {
     const url = `${environments.apiUrl}/Certificate/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyId=${facultyId}&specialityId=${specialityId}&year=${year}&type=${type}&state=${state}`;
     return this.http.get<ICertificateResponseModel[]>(url);
   }

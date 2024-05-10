@@ -1,0 +1,33 @@
+<div class = "container">
+  <fieldset>
+    <legend>Filters</legend>
+    <div class = "optiuni">
+      <h3>Data</h3>
+      <div>
+        <input type="checkbox" [(ngModel)]="isCurrentDay" (change)="onChange()"> Ziua Curenta
+
+      </div>
+      <div>
+        <input type="checkbox" [(ngModel)]="isCurrentWeek" (change)="onChange()"> Saptamana Curenta
+      </div>
+      <div>
+        <input type="checkbox" [(ngModel)]="isCurrentMonth" (change)="onChange()"> Luna Curenta
+      </div>
+      <h3>Tip Adeverinta</h3>
+      <div>
+        <input type="checkbox"  [(ngModel)]="isStandard" > Standard
+      </div>
+      <div>
+        <input type="checkbox" [(ngModel)]="isHg"> HG
+      </div>
+      <h3>Format</h3>
+      <div>
+        <input type="checkbox" [(ngModel)]="isPhysical"> Format Fizic
+      </div>
+      <div>
+        <input type="checkbox" [(ngModel)]="isOnline"> Online
+      </div>
+    </div>
+
+  </fieldset>
+</div>

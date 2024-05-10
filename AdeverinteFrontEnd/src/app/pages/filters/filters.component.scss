@@ -1,0 +1,35 @@
+fieldset{
+  width: 160px;
+}
+.optiuni {
+  display: block;
+}
+
+.optiuni input[type="checkbox"] {
+  margin-bottom: 10px;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+  width: 1.3em;
+  height: 1.3em;
+  background-color: white;
+  border-radius: 50%;
+  vertical-align: middle;
+  border: 1px solid #ddd;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: gray;
+}
+.container {
+  background-color: #fff;
+}
+
+
+
+
