@@ -42,13 +42,13 @@ export class CertificateServices {
   }
 
   public getCertificates(pageNumber?:number, pageSize?:number): Observable<ICertificateResponseModel[]> {
-    const apiUrl = `${environments.apiUrl}/Certificate?PageNumber=${pageNumber}&PageSize=${pageSize}`;
+    const apiUrl = `${environments.apiUrl}/Certificates`;
     return this.http.get<ICertificateResponseModel[]>(apiUrl);
   }
 
 
   public patchRejectCertificate(certificateId : string , motiv : string){
-    const url = `${environments.apiUrl}/Certificate/PatchReject/${certificateId}`;
+    const url = `${environments.apiUrl}/Certificates/PatchReject/${certificateId}`;
     const headers = new HttpHeaders({
       'Accept': 'text/plain',
       'Content-Type': 'application/json',
@@ -58,17 +58,24 @@ export class CertificateServices {
   }
 
 
-  public patchAcceptCertificate(certificateId : string) {
-    const url = `${environments.apiUrl}/Certificate/PatchApproved/${certificateId}`;
+  public patchAcceptCertificate(certificateId : string , stare : EnumStare,rejectMessage?:string) {
+    const url = `${environments.apiUrl}/Certificates/PatchApproved/${certificateId}`;
     const headers = new HttpHeaders({
-      'Accept': 'text/plain',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     });
-    return this.http.patch(url,{headers});
+    const requestBody = {
+      id: certificateId,
+      rejectMessage: rejectMessage,
+      state: stare,
+    };
+
+    // Make the POST request
+    return this.http.post<any>(environments.apiUrl, requestBody, { headers: headers });
   }
 
+
   public getSortedCertificates(pageNumber?:number, pageSize?:number,today?:boolean,week?:boolean,month?:boolean,facultyId?:string,specialityId?:string,year?:number,type?:Type,state?:EnumStare): Observable<ICertificateResponseModel[]> {
-    const url = `${environments.apiUrl}/Certificate/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyId=${facultyId}&specialityId=${specialityId}&year=${year}&type=${type}&state=${state}`;
+    const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyId=${facultyId}&specialityId=${specialityId}&year=${year}&type=${type}&state=${state}`;
     return this.http.get<ICertificateResponseModel[]>(url);
   }
 
@@ -129,13 +136,13 @@ export class CertificateServices {
     this.year = year;
   }
 
-  public getFaculties(): Observable<IFacultyModel[]> {
-    const apiUrl =`${environments.apiUrl}/Faculties`;
-    return this.http.get<IFacultyModel[]>(apiUrl);
-  }
-  public getSpecialities(): Observable<ISpecialityModel[]> {
-    const apiUrl =`${environments.apiUrl}/Specialities`;
-    return this.http.get<ISpecialityModel[]>(apiUrl);
-  }
+  // public getFaculties(): Observable<IFacultyModel[]> {
+  //   const apiUrl =`${environments.apiUrl}/Faculties`;
+  //   return this.http.get<IFacultyModel[]>(apiUrl);
+  // }
+  // public getSpecialities(): Observable<ISpecialityModel[]> {
+  //   const apiUrl =`${environments.apiUrl}/Specialities`;
+  //   return this.http.get<ISpecialityModel[]>(apiUrl);
+  // }
 
 }

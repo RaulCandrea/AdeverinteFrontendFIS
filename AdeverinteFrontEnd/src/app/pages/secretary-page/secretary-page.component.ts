@@ -56,7 +56,6 @@ export class SecretaryPageComponent implements OnInit {
   selection = new SelectionModel<any>(true, []); // Enable multi-selection
   certificates: ICertificateResponseModel[] = [];
   faculties: IFacultyModel[] = [];
-  facultiesArray: string[] = [];
   specialities: ISpecialityModel[] = [];
   specialitiesArray: string[] = [];
   certificateIds: string[] = [];
@@ -81,7 +80,6 @@ export class SecretaryPageComponent implements OnInit {
 
   ngOnInit() {
     this.getData();
-    this.getFaculties();
     this.certificateService.array$.subscribe((data) => {
       this.certificates = data;
       this.initializeCertificates(data);
@@ -96,7 +94,7 @@ export class SecretaryPageComponent implements OnInit {
   }
 
   getData() {
-    this.certificateService.getCertificates(this.currentPage + 1, this.pageSize).pipe(
+    this.certificateService.getCertificates().pipe(
       catchError(error => {
         console.log(error);
         return of([] as ICertificateResponseModel[]);
@@ -110,38 +108,38 @@ export class SecretaryPageComponent implements OnInit {
       });
   }
 
-  getFaculties() {
-    this.certificateService.getFaculties().pipe(
-      catchError(error => {
-        console.log(error);
-        return of([] as IFacultyModel[]);
-      }),
-    )
-      .subscribe(data => {
-        this.faculties = data;
-        let temp: string[] = [];
-        this.faculties.forEach((faculty) => {
-          if (!temp.includes(faculty.name)) {
-            temp.push(faculty.name);
-          }
-          this.facultiesArray = temp;
-        })
-      })
-  }
-
-
-  getSpecialities() {
-    this.certificateService.getSpecialities().pipe(
-      catchError(error => {
-        console.log(error);
-        return of([] as ISpecialityModel[]);
-      }),
-    )
-      .subscribe(data => {
-        this.specialities = data;
-      })
-
-  }
+  // getFaculties() {
+  //   this.certificateService.getFaculties().pipe(
+  //     catchError(error => {
+  //       console.log(error);
+  //       return of([] as IFacultyModel[]);
+  //     }),
+  //   )
+  //     .subscribe(data => {
+  //       this.faculties = data;
+  //       let temp: string[] = [];
+  //       this.faculties.forEach((faculty) => {
+  //         if (!temp.includes(faculty.name)) {
+  //           temp.push(faculty.name);
+  //         }
+  //         this.facultiesArray = temp;
+  //       })
+  //     })
+  // }
+  //
+  //
+  // getSpecialities() {
+  //   this.certificateService.getSpecialities().pipe(
+  //     catchError(error => {
+  //       console.log(error);
+  //       return of([] as ISpecialityModel[]);
+  //     }),
+  //   )
+  //     .subscribe(data => {
+  //       this.specialities = data;
+  //     })
+  //
+  // }
 
   onFacultyOptionSelected(selectedOption: string): void {
     this.certificateService.setFaculty(selectedOption);
@@ -217,7 +215,7 @@ export class SecretaryPageComponent implements OnInit {
   }
 
   acceptCertificate(certificateId: string) {
-    this.certificateService.patchAcceptCertificate(certificateId).subscribe(data => {
+    this.certificateService.patchAcceptCertificate(certificateId,2).subscribe(data => {
         console.log('Patch successful:', data);
       },
       error => {
