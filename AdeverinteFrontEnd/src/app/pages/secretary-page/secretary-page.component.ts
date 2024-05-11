@@ -3,7 +3,7 @@ import {CommonModule, NgForOf, NgIf} from "@angular/common";
 import {Router} from "@angular/router";
 import {IStudentModel} from "../../models/student.model";
 
-import {catchError, of, Subject} from "rxjs";
+import {catchError, Observable, of, Subject} from "rxjs";
 import { SelectionModel } from '@angular/cdk/collections';
 
 import {
@@ -27,6 +27,7 @@ import {ICertificateResponseModel, IFacultyModel, ISpecialityModel} from "../../
 import {CertificateServices} from "../../services/certificate.services";
 import {FiltersComponent} from "../filters/filters.component";
 import {MatCardContent} from "@angular/material/card";
+import {PdfService} from "../../services/pdf.services";
 
 
 @Component({
@@ -74,7 +75,7 @@ export class SecretaryPageComponent implements OnInit {
   }
 
 
-  constructor(private certificateService: CertificateServices, private router: Router) {
+  constructor(private certificateService: CertificateServices, private router: Router, private pdfService: PdfService) {
 
   }
 
@@ -215,7 +216,7 @@ export class SecretaryPageComponent implements OnInit {
   }
 
   acceptCertificate(certificateId: string) {
-    this.certificateService.patchAcceptCertificate(certificateId,2).subscribe(data => {
+    this.certificateService.patchAcceptCertificate(certificateId, 2).subscribe(data => {
         console.log('Patch successful:', data);
       },
       error => {
@@ -255,25 +256,22 @@ export class SecretaryPageComponent implements OnInit {
   pageSize: number = 10; // Default page size
   currentPage: number = 1;
 
-  onPageChange(event: PageEvent): void {
-    this.pageSize = event.pageSize;
-    this.currentPage = event.pageIndex;
-    this.loadCertificatesForPage();
-
-  }
-
-  loadCertificatesForPage(): void {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.getData();
-    const certificatesForPage = this.certificates.slice(startIndex, endIndex);
-  }
 
   get totalPages(): number {
     return Math.ceil(this.certificates.length / this.pageSize);
   }
 
   protected readonly length = 500;
+
+   openPdf(certificateId: string) {
+    console.log(certificateId);
+    this.pdfService.getPdfContent(certificateId).subscribe(
+      (pdfContent : string) =>{
+        console.log(pdfContent);
+       this.pdfService.openPdfInNewWindow(pdfContent)
+        }
+   )};
+
 
 }
 
