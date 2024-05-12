@@ -28,6 +28,7 @@ import {CertificateServices} from "../../services/certificate.services";
 import {FiltersComponent} from "../filters/filters.component";
 import {MatCardContent} from "@angular/material/card";
 import {PdfService} from "../../services/pdf.services";
+import {StudentsServices} from "../../services/students.services";
 
 
 @Component({
@@ -56,8 +57,10 @@ import {PdfService} from "../../services/pdf.services";
 export class SecretaryPageComponent implements OnInit {
   selection = new SelectionModel<any>(true, []); // Enable multi-selection
   certificates: ICertificateResponseModel[] = [];
+  students:IStudentModel[] = [];
   faculties: IFacultyModel[] = [];
   specialities: ISpecialityModel[] = [];
+  facultiesArray : string[] = [];
   specialitiesArray: string[] = [];
   certificateIds: string[] = [];
   popUpVisibility: { [key: string]: { [key: string]: boolean } } = {};
@@ -75,18 +78,19 @@ export class SecretaryPageComponent implements OnInit {
   }
 
 
-  constructor(private certificateService: CertificateServices, private router: Router, private pdfService: PdfService) {
+  constructor(private certificateService: CertificateServices,private studentsService :StudentsServices, private router: Router, private pdfService: PdfService) {
 
   }
 
   ngOnInit() {
     this.getData();
+    this.getStudents();
     this.certificateService.array$.subscribe((data) => {
       this.certificates = data;
       this.initializeCertificates(data);
       this.dataSource = new MatTableDataSource<ICertificateResponseModel>(this.certificates);
     });
-
+    this.getFaculties();
   }
 
   ngAfterViewInit() {
@@ -100,6 +104,7 @@ export class SecretaryPageComponent implements OnInit {
         console.log(error);
         return of([] as ICertificateResponseModel[]);
       }),
+
     )
       .subscribe(data => {
         this.certificates = data;
@@ -107,8 +112,53 @@ export class SecretaryPageComponent implements OnInit {
         this.initializeCertificates(this.certificates);
         this.paginator.pageIndex = 0;
       });
-  }
 
+  }
+  getStudents(){
+    this.studentsService.getStudents().pipe(
+      catchError(error => {
+        console.log(error);
+        return of([] as IStudentModel[]);
+      }),
+
+    )
+      .subscribe(data => {
+        this.students = data;
+        this.students.forEach((certificate) => {
+          if(!this.facultiesArray.includes(certificate.faculty)) {
+            this.facultiesArray.push(certificate.faculty);
+          }
+          if(!this.specialitiesArray.includes(certificate.speciality)){
+            this.specialitiesArray.push(certificate.speciality);
+          }
+        })
+
+
+      });
+
+  }
+  getFaculties() {
+    this.studentsService.getFaculties().pipe(
+      catchError(error => {
+        console.log(error);
+        return of([] as IFacultyModel[]);
+      }),
+
+    )
+      .subscribe(data => {
+        this.faculties = data;
+        this.faculties.forEach((faculty) => {
+          if(!this.facultiesArray.includes(faculty.name)) {
+            this.facultiesArray.push(faculty.name);
+          }
+        })
+      });
+
+    return this.faculties;
+
+
+
+  }
   // getFaculties() {
   //   this.certificateService.getFaculties().pipe(
   //     catchError(error => {
@@ -147,10 +197,9 @@ export class SecretaryPageComponent implements OnInit {
     let temp: string[] = [];
     this.faculties.forEach((faculty) => {
       if (faculty.name == selectedOption) {
-        faculty.specialities.forEach((spec) => {
-          if (!temp.includes(spec.name)) {
-            temp.push(spec.name);
-          }
+        faculty.specialities.forEach((speciality)=>{
+          if(!temp.includes(speciality.name))
+          temp.push(speciality.name);
         })
       }
     })

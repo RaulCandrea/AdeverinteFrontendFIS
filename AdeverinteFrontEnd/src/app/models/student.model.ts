@@ -8,8 +8,8 @@ export enum Role{
 export interface IStudentModel{
   firstName:string,
   lastName:string,
-  faculty:IFacultyModel,
-  speciality:ISpecialityModel,
+  faculty:string,
+  speciality:string,
   year:number,
   marca:string,
   id:number
