@@ -36,7 +36,7 @@ export class CardRespingereComponent {
   }
 
   rejectCertificate(certificateId: string, motiv: string) {
-    this.certificateService.patchRejectCertificate(certificateId, motiv).subscribe(data => {
+    this.certificateService.patchCertificate(certificateId,2, motiv).subscribe(data => {
         console.log('Patch successful:', data);
       },
       error => {

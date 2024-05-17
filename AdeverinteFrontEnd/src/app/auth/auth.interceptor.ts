@@ -16,7 +16,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         });
         return next(authReq);
       } else {
-        auth.signout()
       }
       return next(req);
     })

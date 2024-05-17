@@ -4,28 +4,21 @@
     <div class = "optiuni">
       <h3>Data</h3>
       <div>
-        <input type="checkbox" [(ngModel)]="isCurrentDay" (change)="onChange()"> Ziua Curenta
+        <input type="checkbox" [(ngModel)]="isCurrentDay" (change)="onChange(this.certificateService.getCurrentPage(),this.certificateService.getPageSize(),isCurrentDay,this.certificateService.getWeek(),this.certificateService.getMonth(),this.certificateService.getFaculty(),this.certificateService.getSpec(),this.certificateService.getYear(),this.certificateService.getType(),this.certificateService.getState())"> Ziua Curenta
 
       </div>
       <div>
-        <input type="checkbox" [(ngModel)]="isCurrentWeek" (change)="onChange()"> Saptamana Curenta
+        <input type="checkbox" [(ngModel)]="isCurrentWeek" (change)="onChange(this.certificateService.getCurrentPage(),this.certificateService.getPageSize(),this.certificateService.getToday(),isCurrentWeek,this.certificateService.getMonth(),this.certificateService.getFaculty(),this.certificateService.getSpec(),this.certificateService.getYear(),this.certificateService.getType(),this.certificateService.getState())"> Saptamana Curenta
       </div>
       <div>
-        <input type="checkbox" [(ngModel)]="isCurrentMonth" (change)="onChange()"> Luna Curenta
+        <input type="checkbox" [(ngModel)]="isCurrentMonth" (change)="onChange(this.certificateService.getCurrentPage(),this.certificateService.getPageSize(),this.certificateService.getToday(),this.certificateService.getWeek(),isCurrentMonth,this.certificateService.getFaculty(),this.certificateService.getSpec(),this.certificateService.getYear(),this.certificateService.getType(),this.certificateService.getState())"> Luna Curenta
       </div>
       <h3>Tip Adeverinta</h3>
-      <div>
-        <input type="checkbox"  [(ngModel)]="isStandard" > Standard
+      <div >
+        <input type="checkbox"   (change)="onChange(this.certificateService.getCurrentPage(),this.certificateService.getPageSize(),this.certificateService.getToday(),this.certificateService.getWeek(),this.certificateService.getMonth(),this.certificateService.getFaculty(),this.certificateService.getSpec(),this.certificateService.getYear(),type1,this.certificateService.getState())">Tip 1
       </div>
       <div>
-        <input type="checkbox" [(ngModel)]="isHg"> HG
-      </div>
-      <h3>Format</h3>
-      <div>
-        <input type="checkbox" [(ngModel)]="isPhysical"> Format Fizic
-      </div>
-      <div>
-        <input type="checkbox" [(ngModel)]="isOnline"> Online
+        <input type="checkbox"  (change)="onChange(this.certificateService.getCurrentPage(),this.certificateService.getPageSize(),this.certificateService.getToday(),this.certificateService.getWeek(),this.certificateService.getMonth(),this.certificateService.getFaculty(),this.certificateService.getSpec(),this.certificateService.getYear(),type2,this.certificateService.getState())">Tip 2
       </div>
     </div>
 

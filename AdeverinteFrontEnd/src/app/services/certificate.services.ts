@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {BehaviorSubject, Observable} from "rxjs";
 import {
   EnumStare,
@@ -18,14 +18,16 @@ export class CertificateServices {
   constructor(private http: HttpClient) {
   }
 
-  today:boolean =false;
-  week:boolean = false;
-  month:boolean = false;
-  facultyId:string = '';
-  specialityId:string = '';
-  year:number = 0;
-  type:Type = 0;
-  state:EnumStare = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
+  today: boolean = false;
+  week: boolean = false;
+  month: boolean = false;
+  facultyId: string | undefined = '';
+  specialityId: string | undefined = '';
+  year: string = '';
+  type: Type = 0;
+  state: EnumStare | undefined = 0;
 
 
   private arrayCertificate = new BehaviorSubject<ICertificateResponseModel[]>([]);
@@ -35,58 +37,42 @@ export class CertificateServices {
   array$: Observable<ICertificateResponseModel[]> = this.arrayCertificate.asObservable();
 
 
-
-
   updateArray(newArray: ICertificateResponseModel[]): void {
     this.arrayCertificate.next(newArray);
+    console.log(newArray);
   }
 
-  public getCertificates(pageNumber?:number, pageSize?:number): Observable<ICertificateResponseModel[]> {
+  public getCertificates(pageNumber?: number, pageSize?: number): Observable<ICertificateResponseModel[]> {
     const apiUrl = `${environments.apiUrl}/Certificates`;
     return this.http.get<ICertificateResponseModel[]>(apiUrl);
   }
 
 
-  public patchRejectCertificate(certificateId : string , motiv : string){
-    const url = `${environments.apiUrl}/Certificates/PatchReject/${certificateId}`;
-    const headers = new HttpHeaders({
-      'Accept': 'text/plain',
-      'Content-Type': 'application/json',
-    });
+  public patchCertificate(certificateID: string, state: number, rejectMessage?: string) {
+    const url = `${environments.apiUrl}/Certificates/PatchState/id?id${certificateID}&state=${state}&rejectMessage=${rejectMessage}`;
+    let params = new HttpParams().set('id', certificateID).set('state', state.toString());
 
-    return this.http.patch(url, `"${motiv}"`, { headers });
+    if (rejectMessage !== undefined) {
+      params = params.set('rejectMessage', rejectMessage);
+    }
+    return this.http.patch(url, null, { params });
+
   }
 
 
-  public patchAcceptCertificate(certificateId : string , stare : EnumStare,rejectMessage?:string) {
-    const url = `${environments.apiUrl}/Certificates/PatchApproved/${certificateId}`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    const requestBody = {
-      id: certificateId,
-      rejectMessage: rejectMessage,
-      state: stare,
-    };
-
-    // Make the POST request
-    return this.http.post<any>(environments.apiUrl, requestBody, { headers: headers });
-  }
-
-
-  public getSortedCertificates(pageNumber?:number, pageSize?:number,today?:boolean,week?:boolean,month?:boolean,facultyId?:string,specialityId?:string,year?:number,type?:Type,state?:EnumStare): Observable<ICertificateResponseModel[]> {
-    const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyId=${facultyId}&specialityId=${specialityId}&year=${year}&type=${type}&state=${state}`;
+  public getSortedCertificates(pageNumber?: number | undefined, pageSize?: number | undefined, today?: boolean | undefined, week?: boolean | undefined, month?: boolean | undefined, facultyId?: string | undefined, specialityId?: string | undefined, year?: string | undefined, type?: EnumStare | undefined, state?: EnumStare | undefined): Observable<ICertificateResponseModel[]> {
+    const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyName=${facultyId}&specialityName=${specialityId}&year=${year}&type=${type}&state=${state}`;
     return this.http.get<ICertificateResponseModel[]>(url);
   }
 
-  getState() : number{
+  getState() : EnumStare | undefined{
     return this.state;
   }
   getFaculty() : string{
-    return this.facultyId;
+    return <string>this.facultyId;
   }
   getSpec() : string{
-    return this.specialityId;
+    return <string>this.specialityId;
   }
   getToday(){
     return this.today;
@@ -103,16 +89,29 @@ export class CertificateServices {
   getYear(){
     return this.year;
   }
+  getCurrentPage(){
+    return this.currentPage;
+  }
+  getPageSize(){
+    return this.pageSize;
+  }
 
-  setState(state: number): void {
+  setCurrentPage(newPage :number){
+    this.currentPage = newPage;
+  }
+
+  setPageSize(newPage :number){
+    this.pageSize = newPage;
+  }
+  setState(state: EnumStare |undefined): void {
     this.state = state;
   }
 
-  setFaculty(facultyId: string): void {
+  setFaculty(facultyId: string | undefined): void {
     this.facultyId = facultyId;
   }
 
-  setSpec(specialityId: string): void {
+  setSpec(specialityId: string | undefined): void {
     this.specialityId = specialityId;
   }
 

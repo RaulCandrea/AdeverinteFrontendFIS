@@ -23,7 +23,7 @@ import {FormsModule} from "@angular/forms";
 import {MatIcon} from "@angular/material/icon";
 import {CardRespingereComponent} from "../../card-respingere/card-respingere.component";
 import {DropdownGeneralComponent} from "../../dropdown-general/dropdown-general.component";
-import {ICertificateResponseModel, IFacultyModel, ISpecialityModel} from "../../models/certificate.model";
+import {EnumStare, ICertificateResponseModel, IFacultyModel, ISpecialityModel} from "../../models/certificate.model";
 import {CertificateServices} from "../../services/certificate.services";
 import {FiltersComponent} from "../filters/filters.component";
 import {MatCardContent} from "@angular/material/card";
@@ -57,6 +57,7 @@ import {StudentsServices} from "../../services/students.services";
 export class SecretaryPageComponent implements OnInit {
   selection = new SelectionModel<any>(true, []); // Enable multi-selection
   certificates: ICertificateResponseModel[] = [];
+  filteredState : number = 0;
   students:IStudentModel[] = [];
   faculties: IFacultyModel[] = [];
   specialities: ISpecialityModel[] = [];
@@ -78,7 +79,7 @@ export class SecretaryPageComponent implements OnInit {
   }
 
 
-  constructor(private certificateService: CertificateServices,private studentsService :StudentsServices, private router: Router, private pdfService: PdfService) {
+  constructor(protected certificateService: CertificateServices,private studentsService :StudentsServices, private router: Router, private pdfService: PdfService) {
 
   }
 
@@ -143,12 +144,11 @@ export class SecretaryPageComponent implements OnInit {
         console.log(error);
         return of([] as IFacultyModel[]);
       }),
-
     )
       .subscribe(data => {
         this.faculties = data;
         this.faculties.forEach((faculty) => {
-          if(!this.facultiesArray.includes(faculty.name)) {
+          if (!this.facultiesArray.includes(faculty.name)) {
             this.facultiesArray.push(faculty.name);
           }
         })
@@ -157,40 +157,7 @@ export class SecretaryPageComponent implements OnInit {
     return this.faculties;
 
 
-
   }
-  // getFaculties() {
-  //   this.certificateService.getFaculties().pipe(
-  //     catchError(error => {
-  //       console.log(error);
-  //       return of([] as IFacultyModel[]);
-  //     }),
-  //   )
-  //     .subscribe(data => {
-  //       this.faculties = data;
-  //       let temp: string[] = [];
-  //       this.faculties.forEach((faculty) => {
-  //         if (!temp.includes(faculty.name)) {
-  //           temp.push(faculty.name);
-  //         }
-  //         this.facultiesArray = temp;
-  //       })
-  //     })
-  // }
-  //
-  //
-  // getSpecialities() {
-  //   this.certificateService.getSpecialities().pipe(
-  //     catchError(error => {
-  //       console.log(error);
-  //       return of([] as ISpecialityModel[]);
-  //     }),
-  //   )
-  //     .subscribe(data => {
-  //       this.specialities = data;
-  //     })
-  //
-  // }
 
   onFacultyOptionSelected(selectedOption: string): void {
     this.certificateService.setFaculty(selectedOption);
@@ -215,31 +182,6 @@ export class SecretaryPageComponent implements OnInit {
     // );
   }
 
-  onSpecOptionSelected(selectedOption: string) {
-    this.certificateService.setSpec(selectedOption);
-
-    // this.certificateService.getFilteredDataBySpec(selectedOption).subscribe(
-    //   (data) => {
-    //     this.certificateService.updateArray(data);
-    //   },
-    //   (error) => {
-    //     console.log('Eroare din backend', error);
-    //   }
-    // );
-  }
-
-  onYearOptionSelected(selectedOption: number, faculty: string, spec: string) {
-    this.onFacultyOptionSelected(faculty);
-    this.onSpecOptionSelected(spec);
-    // this.certificateService.getFilteredDataByYear(selectedOption).subscribe(
-    //   (data) => {
-    //     this.certificateService.updateArray(data);
-    //   },
-    //   (error) => {
-    //     console.log('Eroare din backend', error);
-    //   }
-    // )
-  }
 
   initializeCertificates(certificates: ICertificateResponseModel[]) {
     certificates.forEach(cert => {
@@ -264,15 +206,7 @@ export class SecretaryPageComponent implements OnInit {
     this.displayNotification = true;
   }
 
-  acceptCertificate(certificateId: string) {
-    this.certificateService.patchAcceptCertificate(certificateId, 2).subscribe(data => {
-        console.log('Patch successful:', data);
-      },
-      error => {
-        console.error('Error:', error);
-      }
-    );
-  }
+
 
   toggleSelection(row: any) {
     this.selection.toggle(row);
@@ -294,10 +228,18 @@ export class SecretaryPageComponent implements OnInit {
 
   acceptSelected() {
     this.selection.selected.forEach(selectedRow => {
-      this.acceptCertificate(selectedRow.id);
+      this.certificateService.patchCertificate(selectedRow.id,1).subscribe(response =>
+      {
+        console.log(response);
+      });
     });
   }
 
+  patchCertificate(certificateId : string , state :number , rejectMessage ?: string){
+    this.certificateService.patchCertificate(certificateId,state,rejectMessage).subscribe( response =>{
+      console.log(response);
+    });
+  }
   protected readonly Number = Number;
 
   //paginator
@@ -321,7 +263,47 @@ export class SecretaryPageComponent implements OnInit {
         }
    )};
 
-
+  onChange(pageNumber?: number, pageSize?: number, isCurrentDay?: boolean, isCurrentWeek?: boolean, isCurrentMonth?: boolean, faculty?: string, spec?: string, year?: string, type?: number, state?: EnumStare) : void {
+    this.filteredState = state as number;
+    if(state != this.certificateService.getState())
+    {
+      this.certificateService.setState(state);
+    }
+    if(spec != this.certificateService.getSpec())
+    {
+      this.certificateService.setSpec(spec);
+    }
+    if(type != this.certificateService.getType())
+    {
+      this.certificateService.setType(type);
+    }
+    if(faculty != this.certificateService.getFaculty())
+    {
+      this.certificateService.setFaculty(faculty);
+    }
+    if(isCurrentDay != this.certificateService.getToday())
+    {
+      this.certificateService.setToday(isCurrentDay);
+    }
+    if(isCurrentWeek != this.certificateService.getWeek())
+    {
+      this.certificateService.setWeek(isCurrentWeek);
+    }
+    if(isCurrentMonth!= this.certificateService.getMonth())
+    {
+      this.certificateService.setMonth(isCurrentMonth);
+    }
+    console.log(pageSize,pageNumber,isCurrentDay ,isCurrentWeek,isCurrentMonth,faculty,spec,type,year);
+        this.certificateService.getSortedCertificates(pageNumber,pageSize,isCurrentDay,isCurrentWeek,isCurrentMonth,faculty,spec,year  ,type,state).subscribe(
+        (data) => {
+          this.certificateService.updateArray(data);
+          console.log(data);
+        },
+        (error) => {
+          console.log('Eroare din backend', error);
+        }
+      );
+    }
 }
 
 

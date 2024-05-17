@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
+import {CertificateServices} from "../services/certificate.services";
 
 @Component({
   selector: 'app-confirmation-pop-up',
@@ -8,16 +9,18 @@ import { Component } from '@angular/core';
   styleUrl: './confirmation-pop-up.component.scss'
 })
 export class ConfirmationPopUpComponent {
-  constructor() {
+  constructor(private certificateService : CertificateServices) {
   }
+
   displayNotification:boolean = false;
-  saveOption:boolean =false;
+  @Output() save  = new EventEmitter<boolean>;
   closeNotification(){
     this.displayNotification = true;
   }
   saveNotification(): void{
       this.displayNotification = true;
-      this.saveOption = true;
+      this.save.emit(true);
+
     }
 
 }

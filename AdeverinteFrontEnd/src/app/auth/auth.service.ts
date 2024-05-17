@@ -23,31 +23,15 @@ export class AuthService {
   login(email: string, password: string) {
 
     signInWithEmailAndPassword(this.afAuth, email, password).then(() => {
-      this.router.navigate(['/user-page']);
+      this.router.navigate(['secretary-page']);
+      console.log("merge")
     }, (err: { message: any; }) => {
       alert(err.message);
       this.router.navigate(['/login']);
     })
   }
 
-  register(email: string, password: string) {
 
-    createUserWithEmailAndPassword(this.afAuth, email, password).then(() => {
-      alert('User Registered Successfully');
-      this.router.navigate(['/login']);
-    }, (err: { message: any; }) => {
-      alert(err.message);
-      this.router.navigate(['/register']);
-    })
-  }
-
-  signout() {
-    signOut(this.afAuth).then(() => {
-      this.router.navigate(['/login']);
-    }, (err: { message: any; }) => {
-      alert(err.message);
-    })
-  }
 
   async isAuthenticated() {
     await this.afAuth.authStateReady()

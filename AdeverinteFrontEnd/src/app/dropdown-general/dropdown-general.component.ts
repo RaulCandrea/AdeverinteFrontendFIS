@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {CertificateServices} from "../services/certificate.services";
+import {EnumStare} from "../models/certificate.model";
 
 
 @Component({
