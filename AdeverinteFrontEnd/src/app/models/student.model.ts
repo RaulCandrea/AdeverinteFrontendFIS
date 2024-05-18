@@ -1,4 +1,3 @@
-import {IFacultyModel, ISpecialityModel} from "./certificate.model";
 
 export enum Role{
   "Student",
@@ -14,5 +13,5 @@ export interface IStudentModel{
   marca:string,
   id:string,
   email:string;
-  role:Role;
+  role:number;
 }

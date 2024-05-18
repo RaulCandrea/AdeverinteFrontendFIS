@@ -28,4 +28,9 @@ export class StudentsServices{
     const url = `${environments.apiUrl}/Certificates/email?email=${email}`;
     return this.http.get<ICertificateResponseModel[]>(url);
   }
+
+  getStudentByEmail(email:string) :Observable<IStudentModel>{
+    const url = `${environments.apiUrl}/Students/id?id=${email}`;
+    return this.http.get<IStudentModel>(url);
+  }
 }

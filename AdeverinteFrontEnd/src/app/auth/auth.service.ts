@@ -1,6 +1,8 @@
 import {EventEmitter, Injectable, Output} from '@angular/core';
 import { Auth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import {StudentsServices} from "../services/students.services";
+import {IStudentModel} from "../models/student.model";
 
 
 
@@ -8,12 +10,12 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private afAuth: Auth, private router: Router) { }
+  constructor(private afAuth: Auth, private router: Router,private studentService:StudentsServices) { }
 
   async getIdToken() {
     await this.afAuth.authStateReady();
     if(this.afAuth.currentUser === null){
-      this.router.navigate(['/login']);
+      // this.router.navigate(['/login']);
       return null;
     }
     return this.afAuth.currentUser.getIdToken();
@@ -23,14 +25,20 @@ export class AuthService {
   login(email: string, password: string) {
 
     signInWithEmailAndPassword(this.afAuth, email, password).then(() => {
-      this.router.navigate(['secretary-page']);
-      console.log("merge")
+      this.studentService.getStudentByEmail("00e90d24-c593-4655-808d-ad88fe90cb9e").subscribe(data =>{
+      if(data.role == 0){
+        this.router.navigate(['student-page'])
+      }
+      else {
+        this.router.navigate(['secretary-page']);
+      }
+      });
+        console.log("merge")
     }, (err: { message: any; }) => {
       alert(err.message);
       this.router.navigate(['/login']);
     })
   }
-
 
 
   async isAuthenticated() {

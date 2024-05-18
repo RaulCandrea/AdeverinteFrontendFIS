@@ -4,6 +4,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {AuthService} from "../../auth/auth.service";
 import {Router} from "@angular/router";
 import {NgIf} from "@angular/common";
+import {StudentsServices} from "../../services/students.services";
 
 @Component({
   selector: 'app-login-page',
@@ -25,21 +26,27 @@ export class LoginPageComponent {
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
 
-  constructor(private router : Router) {
+  role : number = -1;
+  constructor(private router : Router,private studentService:StudentsServices) {
   }
 
+  ngOninit(){
+    this.navigatFunction();
+  }
 
   onLogin() {
     if (this.loginForm.valid){
       console.log(this.loginForm);
       this.auth.login(this.loginForm.value.email as string, this.loginForm.value.password as string);
-      this.router.navigate(['secretary-page']);
+      this.studentService.getStudentByEmail("00e90d24-c593-4655-808d-ad88fe90cb9e").subscribe(data =>{
+          this.role = data.role;
+          console.log(this.role);
+      })
+
 
       const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          this.router.navigate(['secretary-page']);
-          const uid = user.uid;
           console.log (user);
         }
       });
@@ -47,5 +54,12 @@ export class LoginPageComponent {
 
       console.log('Form Not Valid');
     }
+  }
+
+  navigatFunction(){
+    if(this.role == 0){
+      this.router.navigate(['secretary-page']);
+    }
+    else this.router.navigate(['secretary-page'])
   }
 }

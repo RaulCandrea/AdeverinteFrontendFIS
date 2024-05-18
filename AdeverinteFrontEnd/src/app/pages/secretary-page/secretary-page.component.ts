@@ -182,7 +182,7 @@ export class SecretaryPageComponent implements OnInit {
 
 
   redirectToPage(): void {
-    this.router.navigate(['report-page']);
+    this.router.navigate(['raport-page']);
   }
 
   displayNotification: boolean = false;
