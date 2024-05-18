@@ -12,7 +12,7 @@ export interface IStudentModel{
   speciality:string,
   year:number,
   marca:string,
-  id:number
+  id:string,
   email:string;
   role:Role;
 }

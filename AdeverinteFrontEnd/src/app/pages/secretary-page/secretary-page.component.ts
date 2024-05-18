@@ -29,6 +29,7 @@ import {FiltersComponent} from "../filters/filters.component";
 import {MatCardContent} from "@angular/material/card";
 import {PdfService} from "../../services/pdf.services";
 import {StudentsServices} from "../../services/students.services";
+import {FileServices} from "../../services/file.services";
 
 
 @Component({
@@ -79,9 +80,14 @@ export class SecretaryPageComponent implements OnInit {
   }
 
 
-  constructor(protected certificateService: CertificateServices,private studentsService :StudentsServices, private router: Router, private pdfService: PdfService) {
+  constructor(protected certificateService: CertificateServices,private studentsService :StudentsServices, private router: Router, private pdfService: PdfService,private fileService : FileServices) {
 
   }
+
+  totalItems = 100;
+  pageSize = 100;
+  currentPage = 1;
+
 
   ngOnInit() {
     this.getData();
@@ -99,8 +105,8 @@ export class SecretaryPageComponent implements OnInit {
 
   }
 
-  getData() {
-    this.certificateService.getCertificates().pipe(
+  getData(pageNumber?:number,pageSize?:number) {
+    this.certificateService.getCertificates(pageNumber,pageSize).pipe(
       catchError(error => {
         console.log(error);
         return of([] as ICertificateResponseModel[]);
@@ -111,8 +117,8 @@ export class SecretaryPageComponent implements OnInit {
         this.certificates = data;
         this.dataSource = new MatTableDataSource<ICertificateResponseModel>(this.certificates);
         this.initializeCertificates(this.certificates);
-        this.paginator.pageIndex = 0;
       });
+
 
   }
 
@@ -216,22 +222,11 @@ export class SecretaryPageComponent implements OnInit {
 
   patchCertificate(certificateId : string , state :number , rejectMessage ?: string){
     this.certificateService.patchCertificate(certificateId,state,rejectMessage).subscribe( response =>{
-      console.log(response);
     });
+    location.reload();
   }
   protected readonly Number = Number;
 
-  //paginator
-  pageSizeOptions: number[] = [10, 25, 100];
-  pageSize: number = 10; // Default page size
-  currentPage: number = 1;
-
-
-  get totalPages(): number {
-    return Math.ceil(this.certificates.length / this.pageSize);
-  }
-
-  protected readonly length = 500;
 
    openPdf(certificateId: string) {
     console.log(certificateId);
@@ -283,6 +278,24 @@ export class SecretaryPageComponent implements OnInit {
         }
       );
     }
+
+  selectedFile: File | null = null;
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
+  onSubmit(certificateId:string ) : void {
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('file', this.selectedFile, this.selectedFile.name);
+
+      this.fileService.patchCertificateWithSignedPDF(certificateId, formData);
+    }
+  }
 }
 
 

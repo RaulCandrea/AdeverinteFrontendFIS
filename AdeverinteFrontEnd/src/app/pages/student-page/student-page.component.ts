@@ -11,7 +11,7 @@ import {
   MatTable,
   MatTableDataSource
 } from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {catchError, of} from "rxjs";
 import {CardRespingereComponent} from "../../card-respingere/card-respingere.component";
 import {ConfirmationPopUpComponent} from "../../confirmation-pop-up/confirmation-pop-up.component";
@@ -19,6 +19,10 @@ import {MatCardContent} from "@angular/material/card";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {NgForOf, NgIf} from "@angular/common";
 import {PdfService} from "../../services/pdf.services";
+import {FileServices} from "../../services/file.services";
+import {CertificateServices} from "../../services/certificate.services";
+import {MatSort, MatSortHeader, Sort} from "@angular/material/sort";
+import {LiveAnnouncer} from "@angular/cdk/a11y";
 
 @Component({
   selector: 'app-student-page',
@@ -41,12 +45,15 @@ import {PdfService} from "../../services/pdf.services";
     MatCheckbox,
     MatPaginator,
     NgIf,
-    NgForOf
+    NgForOf,
+    MatSort,
+    MatSortHeader
   ],
   templateUrl: './student-page.component.html',
   styleUrl: './student-page.component.scss'
 })
 export class StudentPageComponent implements OnInit{
+  id :string ="";
   nume:string = "";
   facultate:string = "";
   specializare = "";
@@ -59,10 +66,28 @@ export class StudentPageComponent implements OnInit{
   displayedColumns: string[] = [ 'Stare', 'Marca', 'Nume complet', 'Motiv', 'Actiuni'];
   dataSource: MatTableDataSource<ICertificateResponseModel> = new MatTableDataSource<ICertificateResponseModel>(this.certificates);
   pageSizeOptions = [5, 10, 15];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
 
-  constructor(private studentService : StudentsServices , private pdfService :PdfService) {
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+  @ViewChild(MatSort) sort!: MatSort;
+
+
+
+  /** Announce the change in sort state for assistive technology. */
+
+
+
+  constructor(private _liveAnnouncer: LiveAnnouncer,private studentService : StudentsServices , private pdfService :PdfService ,private certificateService:CertificateServices) {
+  }
+
+  announceSortChange(sortState: Sort) {
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
   }
 
   ngOnInit(){
@@ -74,11 +99,6 @@ export class StudentPageComponent implements OnInit{
     this.showPopup = !this.showPopup;
   }
 
-  changeMotivValue(eventData: Event){
-    let temp:string = (<HTMLInputElement>eventData.target).value;
-    console.log(temp);
-    this.motivValue = temp;
-  }
   getStatev(state:number) : string{
     if(state == 0 )
     {
@@ -92,8 +112,23 @@ export class StudentPageComponent implements OnInit{
     {
       return 'Respins';
     }
-    else
-      return 'In asteptare'
+      if(state == 3) {
+        return 'Semnata';
+      }
+      else{
+        return 'In asteptare';
+      }
+  }
+
+  postCertificate(){
+    let tip : number = 0;
+    if(this.selectedTip == "Tip1"){
+      tip = 0;
+    }
+    else{
+      tip =1;
+    }
+    this.certificateService.postCertificate(this.isChecked,this.id,tip,this.motivValue)
   }
 
   getStudentsCertificates(email : string){
@@ -110,6 +145,7 @@ export class StudentPageComponent implements OnInit{
         this.facultate = certificate.student.faculty;
         this.specializare = certificate.student.speciality;
         this.nume = certificate.student.lastName + certificate.student.lastName;
+        this.id = certificate.student.id;
       })
       this.dataSource = new MatTableDataSource<ICertificateResponseModel>(this.certificates);
       })
@@ -124,9 +160,17 @@ export class StudentPageComponent implements OnInit{
     )};
 
   onSubmit(){
+   this.postCertificate();
     this.togglePopup();
+
   }
 
   protected readonly length = length;
   pageSize: number = 10;
+
+
+
+
+
+
 }

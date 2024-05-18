@@ -37,7 +37,6 @@ export  interface ICertificateResponseModel {
 export interface ICertificateRequestModel {
   onEmail	:boolean,
   studentId:string,
-  nullable: true,
-  type: Type,
+  type: number,
   motiv : string,
 }

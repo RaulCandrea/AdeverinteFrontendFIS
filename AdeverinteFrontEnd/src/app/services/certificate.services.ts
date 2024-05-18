@@ -59,6 +59,29 @@ export class CertificateServices {
 
   }
 
+  public postCertificate(onEmail : boolean,studentID:string,type:number,motive:string){
+
+    const certificateData = {
+      onEmail: onEmail,
+      studentId: studentID,
+      type : type,
+      motive: motive,
+    };
+    const url = `${environments.apiUrl}/Certificates`;
+    console.log(onEmail,studentID,type,motive);
+    this.http.post(url,certificateData).subscribe({
+      next: response => {
+        console.log('Certificate created successfully', response);
+        // Reload the page after successful creation
+        location.reload();
+      },
+      error: error => {
+        console.error('Error creating certificate', error);
+      }
+    });
+
+  }
+
 
   public getSortedCertificates(pageNumber?: number | undefined, pageSize?: number | undefined, today?: boolean | undefined, week?: boolean | undefined, month?: boolean | undefined, facultyId?: string | undefined, specialityId?: string | undefined, year?: string | undefined, type?: EnumStare | undefined, state?: EnumStare | undefined): Observable<ICertificateResponseModel[]> {
     const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyName=${facultyId}&specialityName=${specialityId}&year=${year}&type=${type}&state=${state}`;

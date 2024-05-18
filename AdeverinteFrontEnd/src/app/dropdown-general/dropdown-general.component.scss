@@ -31,7 +31,6 @@
   text-decoration: none;
   display: flex;
 
-
 }
 
 
@@ -46,4 +45,9 @@
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
   background-color: #2e3192;
+}
+
+.dropdown-item{
+  justify-content: center;
+  width: 100%;
 }
