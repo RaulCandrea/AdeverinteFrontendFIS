@@ -115,6 +115,7 @@ export class SecretaryPageComponent implements OnInit {
       });
 
   }
+
   getStudents(){
     this.studentsService.getStudents().pipe(
       catchError(error => {
@@ -159,28 +160,6 @@ export class SecretaryPageComponent implements OnInit {
 
   }
 
-  onFacultyOptionSelected(selectedOption: string): void {
-    this.certificateService.setFaculty(selectedOption);
-    let temp: string[] = [];
-    this.faculties.forEach((faculty) => {
-      if (faculty.name == selectedOption) {
-        faculty.specialities.forEach((speciality)=>{
-          if(!temp.includes(speciality.name))
-          temp.push(speciality.name);
-        })
-      }
-    })
-    this.specialitiesArray = temp;
-
-    // this.certificateService.getFilteredDataByFaculty(selectedOption).subscribe(
-    //   (data) => {
-    //     this.certificateService.updateArray(data);
-    //   },
-    //   (error) => {
-    //     console.log('Eroare din backend', error);
-    //   }
-    // );
-  }
 
 
   initializeCertificates(certificates: ICertificateResponseModel[]) {

@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../environments/environment";
 import {environments} from "../environment";
 import {Observable} from "rxjs";
-import {IFacultyModel} from "../models/certificate.model";
+import {ICertificateResponseModel, IFacultyModel} from "../models/certificate.model";
 
 @Injectable({
   providedIn:"root"
@@ -22,5 +22,10 @@ export class StudentsServices{
   getFaculties():Observable<IFacultyModel[]>{
     const apiurl = `${environments.apiUrl}/Faculties`;
     return this.http.get<IFacultyModel[]>(apiurl);
+  }
+
+  getCertificatesByEmail(email : string):Observable<ICertificateResponseModel[]>{
+    const url = `${environments.apiUrl}/Certificates/email?email=${email}`;
+    return this.http.get<ICertificateResponseModel[]>(url);
   }
 }
