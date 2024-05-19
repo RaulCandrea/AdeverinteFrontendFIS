@@ -217,15 +217,24 @@ export class SecretaryPageComponent implements OnInit {
       {
         console.log(response);
       });
+      this.certificateService.postCertificatePdf(selectedRow.id);
     });
   }
 
   patchCertificate(certificateId : string , state :number , rejectMessage ?: string){
     this.certificateService.patchCertificate(certificateId,state,rejectMessage).subscribe( response =>{
+      if(state == 1) {
+        this.certificateService.postCertificatePdf(certificateId).subscribe(data => {
+          console.log(data);
+          location.reload();
+        }
+      )
+      }
     });
-    location.reload();
-  }
+
+    }
   protected readonly Number = Number;
+
 
 
    openPdf(certificateId: string) {

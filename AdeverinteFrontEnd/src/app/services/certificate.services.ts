@@ -81,6 +81,10 @@ export class CertificateServices {
     });
 
   }
+  public postCertificatePdf(certificateID : string){
+    const url = `${environments.apiUrl}/Certificates/GeneratePdf?certificateId=${certificateID}`
+    return this.http.post(url,certificateID);
+  }
 
 
   public getSortedCertificates(pageNumber?: number | undefined, pageSize?: number | undefined, today?: boolean | undefined, week?: boolean | undefined, month?: boolean | undefined, facultyId?: string | undefined, specialityId?: string | undefined, year?: string | undefined, type?: EnumStare | undefined, state?: EnumStare | undefined): Observable<ICertificateResponseModel[]> {

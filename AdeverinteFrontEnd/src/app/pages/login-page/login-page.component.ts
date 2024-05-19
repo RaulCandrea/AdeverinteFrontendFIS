@@ -38,7 +38,7 @@ export class LoginPageComponent {
     if (this.loginForm.valid){
       console.log(this.loginForm);
       this.auth.login(this.loginForm.value.email as string, this.loginForm.value.password as string);
-      this.studentService.getStudentByEmail("00e90d24-c593-4655-808d-ad88fe90cb9e").subscribe(data =>{
+      this.studentService.getStudentByEmail(this.loginForm.value.email as string).subscribe(data =>{
           this.role = data.role;
           console.log(this.role);
       })

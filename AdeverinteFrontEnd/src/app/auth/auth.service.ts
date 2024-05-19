@@ -25,7 +25,7 @@ export class AuthService {
   login(email: string, password: string) {
 
     signInWithEmailAndPassword(this.afAuth, email, password).then(() => {
-      this.studentService.getStudentByEmail("00e90d24-c593-4655-808d-ad88fe90cb9e").subscribe(data =>{
+      this.studentService.getStudentByEmail(email).subscribe(data =>{
       if(data.role == 0){
         this.router.navigate(['student-page'])
       }

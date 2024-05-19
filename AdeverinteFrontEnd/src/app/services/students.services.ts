@@ -30,7 +30,7 @@ export class StudentsServices{
   }
 
   getStudentByEmail(email:string) :Observable<IStudentModel>{
-    const url = `${environments.apiUrl}/Students/id?id=${email}`;
+    const url = `${environments.apiUrl}/Students/email?email=${email}`;
     return this.http.get<IStudentModel>(url);
   }
 }
