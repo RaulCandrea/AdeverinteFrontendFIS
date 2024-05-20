@@ -43,7 +43,7 @@ export class CertificateServices {
   }
 
   public getCertificates(pageNumber?: number, pageSize?: number): Observable<ICertificateResponseModel[]> {
-    const apiUrl = `${environments.apiUrl}/Certificates`;
+    const apiUrl = `${environments.apiUrl}/Certificates?PageNumber=${pageNumber}&PageSize=${pageSize}`;
     return this.http.get<ICertificateResponseModel[]>(apiUrl);
   }
 
@@ -87,9 +87,19 @@ export class CertificateServices {
   }
 
 
-  public getSortedCertificates(pageNumber?: number | undefined, pageSize?: number | undefined, today?: boolean | undefined, week?: boolean | undefined, month?: boolean | undefined, facultyId?: string | undefined, specialityId?: string | undefined, year?: string | undefined, type?: EnumStare | undefined, state?: EnumStare | undefined): Observable<ICertificateResponseModel[]> {
-    const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyName=${facultyId}&specialityName=${specialityId}&year=${year}&type=${type}&state=${state}`;
+  public getSortedCertificates(pageNumber?: number, pageSize?: number, today?: boolean | undefined, week?: boolean | undefined, month?: boolean | undefined, facultyId?: string | undefined, specialityId?: string | undefined, year?: string | undefined, type?: EnumStare | undefined, state?: EnumStare | undefined): Observable<ICertificateResponseModel[]> {
+    const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${1}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyName=${facultyId}&specialityName=${specialityId}&year=${year}&type=${type}&state=${state}`;
     return this.http.get<ICertificateResponseModel[]>(url);
+  }
+
+  public sendCertificateOnEmail (certificateID : string) {
+    const url = `${environments.apiUrl}/Certificates/SentEmail/${certificateID}`;
+    return this.http.post(url,certificateID);
+  }
+
+  public sendRejectOnEmail (certificateID : string){
+    const url = `${environments.apiUrl}/Certificates/SentRejectedEmail/${certificateID}`
+    return this.http.post(url,certificateID);
   }
 
   getState() : EnumStare | undefined{

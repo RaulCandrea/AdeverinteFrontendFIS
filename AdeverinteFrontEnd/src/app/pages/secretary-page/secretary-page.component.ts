@@ -1,11 +1,9 @@
-import {Component, Injectable, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {CommonModule, NgForOf, NgIf} from "@angular/common";
 import {Router} from "@angular/router";
 import {IStudentModel} from "../../models/student.model";
-
-import {catchError, Observable, of, Subject} from "rxjs";
+import {catchError, of} from "rxjs";
 import { SelectionModel } from '@angular/cdk/collections';
-
 import {
   MatCell, MatCellDef,
   MatColumnDef,
@@ -15,7 +13,6 @@ import {
   MatTable, MatTableDataSource,
   MatTableModule
 } from "@angular/material/table";
-import {MatPaginator, MatPaginatorIntl, MatPaginatorModule, PageEvent} from "@angular/material/paginator";
 import {ConfirmationPopUpComponent} from "../../confirmation-pop-up/confirmation-pop-up.component";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatButton} from "@angular/material/button";
@@ -30,6 +27,7 @@ import {MatCardContent} from "@angular/material/card";
 import {PdfService} from "../../services/pdf.services";
 import {StudentsServices} from "../../services/students.services";
 import {FileServices} from "../../services/file.services";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 
 
 @Component({
@@ -47,11 +45,10 @@ import {FileServices} from "../../services/file.services";
     MatCellDef,
     MatHeaderRowDef,
     MatRowDef,
-    MatPaginator,
     CommonModule,
-    MatTableModule, MatPaginatorModule, CardRespingereComponent, ConfirmationPopUpComponent, NgIf, MatCheckbox, MatButton, DropdownGeneralComponent, FormsModule, MatIcon, FiltersComponent, MatCardContent
+    MatTableModule, CardRespingereComponent, ConfirmationPopUpComponent, NgIf, MatCheckbox, MatButton, DropdownGeneralComponent, FormsModule, MatIcon, FiltersComponent, MatCardContent, MatPaginator
   ],
-  providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntl }],
+  providers: [],
   templateUrl: './secretary-page.component.html',
   styleUrl: './secretary-page.component.scss'
 })
@@ -61,7 +58,6 @@ export class SecretaryPageComponent implements OnInit {
   filteredState : number = 0;
   students:IStudentModel[] = [];
   faculties: IFacultyModel[] = [];
-  specialities: ISpecialityModel[] = [];
   facultiesArray : string[] = [];
   specialitiesArray: string[] = [];
   certificateIds: string[] = [];
@@ -69,7 +65,6 @@ export class SecretaryPageComponent implements OnInit {
   motivRespingere: string = '';
   displayedColumns: string[] = ['select', 'ID', 'Marca', 'Nume complet', 'Motiv', 'Actiuni'];
   dataSource: MatTableDataSource<ICertificateResponseModel> = new MatTableDataSource<ICertificateResponseModel>(this.certificates);
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
 
   showPopup = true;
@@ -84,9 +79,6 @@ export class SecretaryPageComponent implements OnInit {
 
   }
 
-  totalItems = 100;
-  pageSize = 100;
-  currentPage = 1;
 
 
   ngOnInit() {
@@ -100,12 +92,14 @@ export class SecretaryPageComponent implements OnInit {
     this.getFaculties();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-
-  }
 
   getData(pageNumber?:number,pageSize?:number) {
+    if(pageSize == undefined){
+      pageSize = 5;
+    }
+    if(pageNumber == undefined){
+      pageNumber = 1;
+    }
     this.certificateService.getCertificates(pageNumber,pageSize).pipe(
       catchError(error => {
         console.log(error);
@@ -226,9 +220,14 @@ export class SecretaryPageComponent implements OnInit {
       if(state == 1) {
         this.certificateService.postCertificatePdf(certificateId).subscribe(data => {
           console.log(data);
-          location.reload();
-        }
-      )
+        })
+      }
+      if(state == 3){
+        this.certificateService.sendCertificateOnEmail(certificateId).subscribe(data =>{
+          console.log(data);
+        });
+        console.log(certificateId);
+        // location.reload();
       }
     });
 
@@ -276,6 +275,7 @@ export class SecretaryPageComponent implements OnInit {
     {
       this.certificateService.setMonth(isCurrentMonth);
     }
+
     console.log(pageSize,pageNumber,isCurrentDay ,isCurrentWeek,isCurrentMonth,faculty,spec,type,year);
         this.certificateService.getSortedCertificates(pageNumber,pageSize,isCurrentDay,isCurrentWeek,isCurrentMonth,faculty,spec,year  ,type,state).subscribe(
         (data) => {
@@ -303,7 +303,16 @@ export class SecretaryPageComponent implements OnInit {
       formData.append('file', this.selectedFile, this.selectedFile.name);
 
       this.fileService.patchCertificateWithSignedPDF(certificateId, formData);
+      // location.reload();
     }
+  }
+
+  currentPage : number = 0;
+
+  handlePageEvent(pageEvent : PageEvent){
+    console.log(pageEvent);
+    this.onChange(pageEvent.pageIndex,pageEvent.pageSize,this.certificateService.getToday(),this.certificateService.getWeek(),this.certificateService.getMonth(),this.certificateService.getFaculty(),this.certificateService.getSpec(),this.certificateService.getYear(),this.certificateService.getType(),this.certificateService.getState());
+    // this.getData(pageEvent.pageIndex + 1,pageEvent.pageSize)
   }
 }
 

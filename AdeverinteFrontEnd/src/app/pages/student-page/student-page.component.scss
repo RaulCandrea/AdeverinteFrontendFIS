@@ -5,7 +5,7 @@ body{
   width:500px; height: 500px;
 }
 td{
-  padding:10px 3px;
+  padding:14px 20px;
 }
 .checkbox{
   margin-top : 10px;
@@ -105,7 +105,7 @@ button:hover{
 .container-mat{
   justify-content: center;
   align-items: center;
-  margin-top: 5%;
+  margin-top: 2%;
   margin-left: 5%;
   width: 90%;
 }
@@ -148,4 +148,15 @@ button:hover{
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+.imagine-upt{
+  margin-top:5%;
+  margin-bottom:5%;
+}
+.button-adeverinta{
+  margin-left: 5%;
+  margin-bottom: 1%;
+  width: 12%;
+  height: 7%;
+  font-size: 15px;
 }

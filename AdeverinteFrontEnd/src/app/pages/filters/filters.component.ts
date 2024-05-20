@@ -57,6 +57,8 @@ export class FiltersComponent {
     }
 
     console.log(pageSize,pageNumber,isCurrentDay ,isCurrentWeek,isCurrentMonth,faculty,spec,type,year);
+    pageSize = 10;
+    pageNumber = 1;
     this.certificateService.getSortedCertificates(pageNumber, pageSize, isCurrentDay, isCurrentWeek, isCurrentMonth, faculty, spec, year, type, state).subscribe(
       (data) => {
         this.certificateService.updateArray(data);

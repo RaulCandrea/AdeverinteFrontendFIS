@@ -5,15 +5,17 @@ import {SecretaryPageComponent} from "./pages/secretary-page/secretary-page.comp
 import {DomSanitizer} from "@angular/platform-browser";
 import {RaportPageComponent} from "./pages/raport-page/raport-page.component";
 import {StudentPageComponent} from "./pages/student-page/student-page.component";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LoginPageComponent, SecretaryPageComponent, RaportPageComponent, StudentPageComponent],
+  imports: [RouterOutlet, LoginPageComponent, SecretaryPageComponent, RaportPageComponent, StudentPageComponent, MatPaginator],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent{
   title = 'adeverinteforntend';
+
 
 }

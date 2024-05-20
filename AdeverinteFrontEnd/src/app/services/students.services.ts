@@ -14,6 +14,8 @@ export class StudentsServices{
 
   constructor(private http : HttpClient) {
   }
+
+  static email :string;
   getStudents():Observable<IStudentModel[]> {
     const apiurl = `${environments.apiUrl}/Students`;
     return this.http.get<IStudentModel[]>(apiurl);
@@ -32,5 +34,13 @@ export class StudentsServices{
   getStudentByEmail(email:string) :Observable<IStudentModel>{
     const url = `${environments.apiUrl}/Students/email?email=${email}`;
     return this.http.get<IStudentModel>(url);
+  }
+
+  getEmail(){
+    return StudentsServices.email;
+  }
+
+  setEmail(newEmail : string){
+    StudentsServices.email = newEmail;
   }
 }

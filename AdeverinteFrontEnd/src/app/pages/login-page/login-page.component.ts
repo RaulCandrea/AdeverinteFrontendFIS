@@ -42,8 +42,7 @@ export class LoginPageComponent {
           this.role = data.role;
           console.log(this.role);
       })
-
-
+      this.studentService.setEmail(this.loginForm.value.email as string);
       const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
         if (user) {

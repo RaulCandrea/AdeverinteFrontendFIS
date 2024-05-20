@@ -18,13 +18,13 @@
         </td></tr>
       </table>
       <div class="checkbox">
-        <input type="checkbox" [(ngModel)]="isChecked"> Doriti adeverinta online pe mail ul de student?
+        <input type="checkbox" [(ngModel)]="isChecked"> Doriti adeverinta online pe mail?
       </div>
       <button class="button-submit" (click)="onSubmit()">Submit</button>
     </fieldset>
   </div>
 </div>
-<button (click)="togglePopup()">Solicita adeverinta</button>
+<button class = "button-adeverinta"(click)="togglePopup()">Solicita adeverinta</button>
 <div class="container-mat">
 <div class="mat-elevation-z8">
   <mat-card-content>
@@ -58,6 +58,7 @@
         <th mat-header-cell  mat-sort-header matSort *matHeaderCellDef class = "column-def">PDF</th>
         <td mat-cell *matCellDef="let element" >
           <button *ngIf="element.state == 3" (click)="openPdf(element.id)">Vizualizeaza</button>
+          <div *ngIf = "element.state != 3">Nu este semnat!</div>
         </td>
       </ng-container>
 
@@ -65,6 +66,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    <mat-paginator [length]="500" [pageSize]="1" [showFirstLastButtons]="true" [pageSizeOptions]="[10,20,50]" [pageIndex]="currentPage" (page)="handlePageEvent($event)"></mat-paginator>
   </mat-card-content>
   </div>
   </div>
