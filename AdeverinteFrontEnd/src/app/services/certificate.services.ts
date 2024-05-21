@@ -26,7 +26,7 @@ export class CertificateServices {
   facultyId: string | undefined = '';
   specialityId: string | undefined = '';
   year: string = '';
-  type: Type = 0;
+  type: Type  = 0;
   state: EnumStare | undefined = 0;
 
 
@@ -88,7 +88,7 @@ export class CertificateServices {
 
 
   public getSortedCertificates(pageNumber?: number, pageSize?: number, today?: boolean | undefined, week?: boolean | undefined, month?: boolean | undefined, facultyId?: string | undefined, specialityId?: string | undefined, year?: string | undefined, type?: EnumStare | undefined, state?: EnumStare | undefined): Observable<ICertificateResponseModel[]> {
-    const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${1}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyName=${facultyId}&specialityName=${specialityId}&year=${year}&type=${type}&state=${state}`;
+    const url = `${environments.apiUrl}/Certificates/SortByAll?PageNumber=${pageNumber}&PageSize=${pageSize}&today=${today}&week=${week}&month=${month}&facultyName=${facultyId}&specialityName=${specialityId}&year=${year}&type=${type}&state=${state}`;
     return this.http.get<ICertificateResponseModel[]>(url);
   }
 
