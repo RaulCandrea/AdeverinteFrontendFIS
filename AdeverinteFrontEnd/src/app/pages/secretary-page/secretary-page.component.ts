@@ -82,6 +82,8 @@ export class SecretaryPageComponent implements OnInit {
 
 
   ngOnInit() {
+    this.certificateService.setCurrentPage(1);
+    this.certificateService.setPageSize(5);
     this.getData();
     this.getStudents();
     this.certificateService.array$.subscribe((data) => {
@@ -277,7 +279,7 @@ export class SecretaryPageComponent implements OnInit {
     }
 
     console.log(pageSize,pageNumber,isCurrentDay ,isCurrentWeek,isCurrentMonth,faculty,spec,type,year);
-        this.certificateService.getSortedCertificates(pageNumber,pageSize,isCurrentDay,isCurrentWeek,isCurrentMonth,faculty,spec,year  ,type,state).subscribe(
+        this.certificateService.getSortedCertificates(pageNumber,pageSize,isCurrentDay,isCurrentWeek,isCurrentMonth,faculty,spec,year,type,state).subscribe(
         (data) => {
           this.certificateService.updateArray(data);
           console.log(data);
@@ -307,12 +309,13 @@ export class SecretaryPageComponent implements OnInit {
     }
   }
 
-  currentPage : number = 0;
+  currentPage : number = 1;
 
   handlePageEvent(pageEvent : PageEvent){
     console.log(pageEvent);
     this.onChange(pageEvent.pageIndex,pageEvent.pageSize,this.certificateService.getToday(),this.certificateService.getWeek(),this.certificateService.getMonth(),this.certificateService.getFaculty(),this.certificateService.getSpec(),this.certificateService.getYear(),this.certificateService.getType(),this.certificateService.getState());
-    // this.getData(pageEvent.pageIndex + 1,pageEvent.pageSize)
+    this.certificateService.setPageSize(pageEvent.pageSize);
+    this.certificateService.setCurrentPage(pageEvent.pageIndex);
   }
 }
 

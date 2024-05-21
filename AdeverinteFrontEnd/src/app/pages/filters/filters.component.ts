@@ -23,9 +23,11 @@ export class FiltersComponent {
 
   constructor(protected  certificateService : CertificateServices ) {
   }
+
   toggleOption(option : boolean){
     option = !option;
-  }
+    }
+
   onChange(pageNumber?: number, pageSize?: number, isCurrentDay?: boolean, isCurrentWeek?: boolean, isCurrentMonth?: boolean, faculty?: string, spec?: string, year?: string, type?: number, state?: EnumStare) : void {
     if(state != this.certificateService.getState())
     {
@@ -57,8 +59,6 @@ export class FiltersComponent {
     }
 
     console.log(pageSize,pageNumber,isCurrentDay ,isCurrentWeek,isCurrentMonth,faculty,spec,type,year);
-    pageSize = 10;
-    pageNumber = 1;
     this.certificateService.getSortedCertificates(pageNumber, pageSize, isCurrentDay, isCurrentWeek, isCurrentMonth, faculty, spec, year, type, state).subscribe(
       (data) => {
         this.certificateService.updateArray(data);
